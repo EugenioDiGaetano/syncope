@@ -32,7 +32,7 @@ under the License.
   <groupId>org.apache.syncope.fit</groupId>
   <artifactId>syncope-fit-core-reference</artifactId>
   <packaging>war</packaging>
-  
+
   <properties>
     <spring.profiles.active>embedded</spring.profiles.active>
 
@@ -122,7 +122,7 @@ under the License.
       <groupId>org.apache.syncope.ext.flowable</groupId>
       <artifactId>syncope-ext-flowable-rest-cxf</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>          
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.syncope.ext.flowable</groupId>
@@ -140,7 +140,7 @@ under the License.
       <groupId>org.apache.syncope.ext.saml2sp4ui</groupId>
       <artifactId>syncope-ext-saml2sp4ui-rest-cxf</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>          
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.syncope.ext.saml2sp4ui</groupId>
@@ -176,7 +176,7 @@ under the License.
       <groupId>org.apache.syncope.ext.oidcc4ui</groupId>
       <artifactId>syncope-ext-oidcc4ui-rest-cxf</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>          
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.syncope.ext.oidcc4ui</groupId>
@@ -233,7 +233,7 @@ under the License.
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -242,11 +242,6 @@ under the License.
           <execution>
             <id>setupCSV</id>
             <phase>pre-integration-test</phase>
-            <configuration>
-              <target>
-                <copy file="${project.build.directory}/test-classes/test.csv" todir="${test.csvdir.path}" overwrite="true" />
-              </target>
-            </configuration>
             <goals>
               <goal>run</goal>
             </goals>
@@ -339,28 +334,6 @@ under the License.
             </deployable>
           </deployables>
         </configuration>
-        <executions>
-          <execution>
-            <id>start-container</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <skip>${skipTests}</skip>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-container</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-            <configuration>
-              <skip>${skipTests}</skip>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -371,7 +344,7 @@ under the License.
         </configuration>
       </plugin>
     </plugins>
-    
+
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -421,7 +394,7 @@ under the License.
       </testResource>
     </testResources>
   </build>
-  
+
   <profiles>
     <profile>
       <id>zookeeper-it</id>
@@ -615,7 +588,7 @@ under the License.
         </testResources>
       </build>
     </profile>
-  
+
     <profile>
       <id>opensearch-it</id>
 
@@ -742,7 +715,7 @@ under the License.
           <artifactId>syncope-core-persistence-jpa-json</artifactId>
           <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
           <groupId>org.postgresql</groupId>
           <artifactId>postgresql</artifactId>
@@ -952,7 +925,7 @@ under the License.
           <artifactId>syncope-core-persistence-jpa-json</artifactId>
           <version>${project.version}</version>
         </dependency>
-    
+
         <dependency>
           <groupId>com.mysql</groupId>
           <artifactId>mysql-connector-j</artifactId>
@@ -1149,7 +1122,7 @@ under the License.
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>mariadb-it</id>
 
@@ -1228,7 +1201,7 @@ under the License.
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven3-plugin</artifactId>
@@ -1355,7 +1328,7 @@ under the License.
             <filtering>true</filtering>
           </resource>
         </resources>
-      </build>      
+      </build>
     </profile>
 
     <profile>
@@ -1459,7 +1432,7 @@ under the License.
 
     <profile>
       <id>sqlserver-it</id>
-      
+
       <properties>
         <jdbcdriver.groupId>com.microsoft.sqlserver</jdbcdriver.groupId>
         <jdbcdriver.artifactId>mssql-jdbc</jdbcdriver.artifactId>
@@ -1533,7 +1506,7 @@ under the License.
               </execution>
             </executions>
           </plugin>
-          
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven3-plugin</artifactId>
@@ -1549,7 +1522,7 @@ under the License.
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>payara-it</id>
 
@@ -1583,9 +1556,7 @@ under the License.
                   <target>
                     <unzip src="${settings.localRepository}/org/apache/syncope/fit/syncope-fit-build-tools/${project.version}/syncope-fit-build-tools-${project.version}.war"
                            dest="${project.build.outputDirectory}/syncope-fit-buildtools"/>
-                    <copy file="${settings.localRepository}/org/glassfish/jakarta.faces/${jakarta.faces.version}/jakarta.faces-${jakarta.faces.version}.jar"
-                          todir="${project.build.outputDirectory}/syncope-fit-buildtools/WEB-INF/lib"/>
-                  </target>
+                    </target>
                 </configuration>
                 <goals>
                   <goal>run</goal>
@@ -1645,7 +1616,7 @@ under the License.
         <!-- PostgreSQL JDBC Driver is not actually needed but we need this to avoid Wildfly messing up
         by turning Cargo's H2 dependency into a module -->
         <jdbcdriver.groupId>org.postgresql</jdbcdriver.groupId>
-        <jdbcdriver.artifactId>postgresql</jdbcdriver.artifactId>        
+        <jdbcdriver.artifactId>postgresql</jdbcdriver.artifactId>
       </properties>
 
       <dependencies>
@@ -1776,11 +1747,11 @@ under the License.
     <!-- requires JAVA_HOME set to the latest JDK from https://github.com/TravaOpenJDK/trava-jdk-11-dcevm -->
     <profile>
       <id>hotswap</id>
-      
+
       <properties>
         <skipTests>true</skipTests>
       </properties>
-      
+
       <build>
         <defaultGoal>clean verify cargo:run</defaultGoal>
 
@@ -1821,9 +1792,9 @@ under the License.
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      
+
       <properties>
-        <spring.profiles.active>embedded,all</spring.profiles.active> 
+        <spring.profiles.active>embedded,all</spring.profiles.active>
       </properties>
 
       <dependencies>
@@ -1843,7 +1814,7 @@ under the License.
           <artifactId>syncope-ext-saml2sp4ui-persistence-jpa</artifactId>
           <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
           <groupId>org.apache.syncope.ext.oidcc4ui</groupId>
           <artifactId>syncope-ext-oidcc4ui-rest-cxf</artifactId>
@@ -1854,7 +1825,7 @@ under the License.
           <artifactId>syncope-ext-oidcc4ui-persistence-jpa</artifactId>
           <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
           <groupId>org.apache.syncope.ext.scimv2</groupId>
           <artifactId>syncope-ext-scimv2-rest-cxf</artifactId>
@@ -1866,7 +1837,7 @@ under the License.
           <version>${project.version}</version>
         </dependency>
       </dependencies>
-      
+
       <build>
         <plugins>
           <!-- Adds Flowable custom classes -->
@@ -1887,11 +1858,11 @@ under the License.
                 </configuration>
               </execution>
             </executions>
-          </plugin>     
+          </plugin>
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>apache-release</id>
 

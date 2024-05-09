@@ -32,7 +32,7 @@ under the License.
   <groupId>org.apache.syncope.fit</groupId>
   <artifactId>syncope-fit-wa-reference</artifactId>
   <packaging>war</packaging>
-  
+
   <properties>
     <ianal.phase>none</ianal.phase>
 
@@ -158,41 +158,6 @@ under the License.
       </plugin>
 
       <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <configuration>
-          <skip>${skipTests}</skip>
-          <images>
-            <image>
-              <name>kennethreitz/httpbin</name>
-              <run>
-                <ports>
-                  <port>80:80</port>
-                </ports>
-              </run>
-            </image>
-          </images>
-        </configuration>
-        <executions>
-          <execution>
-            <id>start-httpbin</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop-httpbin</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-              <goal>remove</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.cargo</groupId>
         <artifactId>cargo-maven3-plugin</artifactId>
         <inherited>true</inherited>
@@ -277,30 +242,8 @@ under the License.
             </deployable>
           </deployables>
         </configuration>
-        <executions>
-          <execution>
-            <id>start-container</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-            <configuration>
-              <skip>${skipTests}</skip>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-container</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-            <configuration>
-              <skip>${skipTests}</skip>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -366,7 +309,7 @@ under the License.
       </testResource>
     </testResources>
   </build>
-  
+
   <profiles>
     <profile>
       <id>skipTests</id>
@@ -381,7 +324,7 @@ under the License.
 
       <build>
         <defaultGoal>clean verify cargo:run</defaultGoal>
-        
+
         <plugins>
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
@@ -402,11 +345,11 @@ under the License.
         </plugins>
       </build>
     </profile>
-    
+
     <!-- requires JAVA_HOME set to the latest JDK from https://github.com/TravaOpenJDK/trava-jdk-11-dcevm -->
     <profile>
       <id>hotswap</id>
-      
+
       <build>
         <defaultGoal>clean verify cargo:run</defaultGoal>
 
@@ -420,7 +363,7 @@ under the License.
                 <id>enableHotSwapForCoreAndConsoleAndEnduser</id>
                 <phase>package</phase>
                 <configuration>
-                  <target>                                               
+                  <target>
                     <copy file="${basedir}/../core-reference/target/test-classes/hotswap-agent.properties"
                           tofile="${basedir}/../core-reference/target/syncope-fit-core-reference-${project.version}/WEB-INF/classes/hotswap-agent.properties"
                           overwrite="true"/>
@@ -457,7 +400,7 @@ under the License.
             </configuration>
           </plugin>
         </plugins>
-        
+
         <resources>
           <resource>
             <directory>src/test/resources</directory>
@@ -489,7 +432,7 @@ under the License.
             <configuration>
               <skipSource>true</skipSource>
             </configuration>
-          </plugin>          
+          </plugin>
         </plugins>
       </build>
     </profile>
