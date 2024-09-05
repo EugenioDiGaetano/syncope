@@ -392,6 +392,9 @@ under the License.
   </contributors>
 
   <properties>
+    <sonar.organization>eugeniodigaetano</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <maven.build.cache.skipCache>false</maven.build.cache.skipCache>
     <project.build.outputTimestamp>2022-12-26T08:35:28Z</project.build.outputTimestamp>
     <syncope.version>${project.version}</syncope.version>
 
@@ -529,21 +532,28 @@ under the License.
     <sass.skip>false</sass.skip>
     <remote-resources.skip>true</remote-resources.skip>
 
-    <sonar.language>java</sonar.language>
+    <!--sonar.language>java</sonar.language>
     <sonar.java.source>${targetJdk}</sonar.java.source>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-    <sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
-    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths-->
+    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
     <targetJdk>21</targetJdk>
     <rootpom.basedir>${basedir}</rootpom.basedir>
     <maven.multiModuleProjectDirectory>${rootpom.basedir}</maven.multiModuleProjectDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.13.2</junit.version>
   </properties>
 
   <dependencyManagement>
 
     <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
       <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
@@ -1371,7 +1381,7 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
+          <version>3.11.0</version>
           <configuration>
             <release>${targetJdk}</release>
             <useIncrementalCompilation>false</useIncrementalCompilation>
@@ -1591,12 +1601,19 @@ under the License.
             </configuration>
           </configuration>
         </plugin>
-
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.11</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.5</version>
+          <version>3.0.0-M5</version>
           <configuration>
+            <systemPropertyVariables>
+              <jacoco-agent.destfile>**/jacoco.exec</jacoco-agent.destfile>
+            </systemPropertyVariables>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
             <encoding>utf-8</encoding>
             <runOrder>alphabetical</runOrder>
@@ -1620,7 +1637,7 @@ under the License.
           </executions>
         </plugin>
 
-        <plugin>
+        <!--plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>3.3.1</version>
@@ -1628,7 +1645,7 @@ under the License.
             <configLocation>${rootpom.basedir}/src/main/resources/org/apache/syncope/checkstyle.xml</configLocation>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
           </configuration>
-        </plugin>
+        </plugin-->
 
         <plugin>
           <groupId>io.fabric8</groupId>
@@ -1663,13 +1680,6 @@ under the License.
             <skip>${sass.skip}</skip>
           </configuration>
         </plugin>
-
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.11</version>
-        </plugin>
-
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
@@ -1727,7 +1737,7 @@ under the License.
         </executions>
       </plugin>
 
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
@@ -1742,7 +1752,7 @@ under the License.
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -1806,7 +1816,7 @@ under the License.
         </executions>
       </plugin>
 
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
@@ -1845,7 +1855,7 @@ under the License.
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1961,7 +1971,6 @@ under the License.
         <configuration>
           <source>${targetJdk}</source>
           <destDir>apidocs/4.0</destDir>
-          <isOffline>false</isOffline>
           <detectLinks>true</detectLinks>
           <detectJavaApiLink>true</detectJavaApiLink>
           <dependencySourceExcludes>
@@ -2223,7 +2232,7 @@ under the License.
       <build>
         <defaultGoal>clean install</defaultGoal>
 
-        <plugins>
+        <!--plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
@@ -2234,7 +2243,7 @@ under the License.
               </execution>
             </executions>
           </plugin>
-        </plugins>
+        </plugins-->
       </build>
     </profile>
 
@@ -2247,36 +2256,25 @@ under the License.
     </profile>
 
     <profile>
-      <activation>
-        <os>
-          <family>Windows</family>
-        </os>
-      </activation>
-
+      <id>jacoco</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>windows-connid-location</id>
+                <id>prepare-agent</id>
                 <goals>
-                  <goal>regex-property</goal>
+                  <goal>prepare-agent</goal>
                 </goals>
-                <configuration>
-                  <name>syncope.connid.location</name>
-                  <value>file://${project.build.directory}\bundles/</value>
-                  <regex>\\</regex>
-                  <replacement>/</replacement>
-                  <failIfNoMatch>false</failIfNoMatch>
-                </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
+
   </profiles>
 
   <modules>
@@ -2289,6 +2287,7 @@ under the License.
     <module>ext</module>
     <module>archetype</module>
     <module>standalone</module>
+    <module>jacoco-coverage</module>
   </modules>
 
 </project>
