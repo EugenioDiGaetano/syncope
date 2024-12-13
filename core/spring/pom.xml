@@ -35,16 +35,9 @@ under the License.
   
   <properties>
     <rootpom.basedir>${basedir}/../..</rootpom.basedir>
-    <pitest-maven-plugin.version>1.14.1</pitest-maven-plugin.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.pitest</groupId>
-      <artifactId>pitest-junit5-plugin</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
     <dependency> 
       <groupId>jakarta.servlet</groupId> 
       <artifactId>jakarta.servlet-api</artifactId> 
@@ -129,7 +122,7 @@ under the License.
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
@@ -138,22 +131,39 @@ under the License.
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <!--plugins>
-      <plugin>
+    <plugins>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-    </plugins-->
+      </plugin-->
+    <plugin>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-maven</artifactId>
+      <version>1.14.4</version>
+      <!--configuration>
+        <targetClasses>
+          <param>org.apache.syncope.core.spring.security.DefaultPasswordGenerator</param>
+        </targetClasses>
+        <targetTests>
+          <param>org.apache.syncope.core.spring.security.*</param>
+        </targetTests>
+      </configuration-->
+    </plugin>
+    </plugins>
+
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -171,95 +181,5 @@ under the License.
       </resource>
     </resources>
   </build>
-  <profiles>
-    <profile>
-      <id>badua</id>
 
-      <properties>
-        <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
-        <argLine>-javaagent:target/bundles/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=target/badua.ser</argLine>
-      </properties>
-
-      <dependencies>
-        <dependency>
-          <groupId>br.usp.each.saeg</groupId>
-          <artifactId>ba-dua-cli</artifactId>
-          <version>${ba-dua.version}</version>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.10</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>br.usp.each.saeg</groupId>
-                      <artifactId>ba-dua-agent-rt</artifactId>
-                      <classifier>all</classifier>
-                      <version>${ba-dua.version}</version>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.5.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-                <phase>verify</phase>
-                <configuration>
-                  <mainClass>br.usp.each.saeg.badua.cli.Report</mainClass>
-                  <arguments>
-                    <argument>-input</argument>
-                    <argument>${project.build.directory}/badua.ser</argument>
-                    <argument>-classes</argument>
-                    <argument>${project.build.outputDirectory}</argument>
-                    <argument>-show-classes</argument>
-                    <argument>-show-methods</argument>
-                    <argument>-xml</argument>
-                    <argument>${project.build.directory}/badua.xml</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>pit</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-maven</artifactId>
-            <version>${pitest-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>PIT Report Generation</id>
-                <phase>test-compile</phase>
-                <goals>
-                  <goal>mutationCoverage</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

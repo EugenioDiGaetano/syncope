@@ -7,16 +7,13 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build and analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Set up JDK 20
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: 20
+          java-version: 21
           distribution: 'temurin'
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -25,19 +22,19 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Build and analyze with Jacoco
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=eugeniodigaetano_syncope -P jacoco -Drat.skip -Dcheckstyle.skip
-      - name: Upload report
+        run: mvn clean verify -P jacoco
+      - name: Upload JaCoCo report
         uses: actions/upload-artifact@v3
         with:
-          name: Report
-          path: jacoco-coverage/target/site/jacoco-aggregate/
+          name: JaCoCoReport
+          path: jacoco-coverage/target/site/jacoco-coverage/
           if-no-files-found: error
