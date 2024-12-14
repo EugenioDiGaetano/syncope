@@ -92,6 +92,9 @@ public class EncryptorVerifyTest {
                 cipherAlgorithmTest = Mockito.mock(CipherAlgorithm.class);
                 Mockito.when(cipherAlgorithmTest.getAlgorithm()).thenReturn(null);
                 break;
+            case SHA256:
+                cipherAlgorithmTest = CipherAlgorithm.SHA256;
+                break;
             default:
                 cipherAlgorithmTest = null;
                 break;
