@@ -419,6 +419,8 @@ under the License.
     <openjpa.version>4.0.0</openjpa.version>
 
     <jasypt.version>1.9.3</jasypt.version>
+    <jmock.version>2.8.2</jmock.version>
+    <mockito.version>4.11.0</mockito.version>
 
     <groovy.version>5.0.0-alpha-7</groovy.version>
 
@@ -1312,6 +1314,21 @@ under the License.
         <artifactId>curator-test</artifactId>
         <version>${curator.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jmock</groupId>
+        <artifactId>jmock</artifactId>
+        <version>${jmock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>4.11.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-inline</artifactId>
+        <version>4.11.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>

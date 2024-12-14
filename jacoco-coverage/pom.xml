@@ -19,11 +19,11 @@
     </properties>
 
     <dependencies>
-    <dependency>
+    <!--dependency>
         <groupId>org.apache.syncope.core</groupId>
         <artifactId>syncope-core-spring</artifactId>
         <version>${project.version}</version>
-    </dependency>
+    </dependency-->
     <dependency>
         <groupId>${project.parent.groupId}</groupId>
         <artifactId>syncope-archetype</artifactId>
