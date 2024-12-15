@@ -1,4 +1,4 @@
-name: pit
+name: jacoco
 on:
   push:
     branches:
@@ -7,29 +7,41 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build and analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Set up JDK 20
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: 20
+          java-version: 21
           distribution: 'temurin'
-      - name: Cache Maven packages
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 21
+          java-distribution: temurin
+          maven-version: 3.9.5
+      - name: Cache SonarCloud packages
         uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze syncope project
+      - name: Build and analyze with Pit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn clean verify -P pit -Drat.skip -Dcheckstyle.skip
-      - name: Upload report
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean verify -P pit
+      - name: Upload Pit report
         uses: actions/upload-artifact@v3
         with:
-          name: Pit_Report
-          path: core/spring/target/pit-reports
+          name: PitReport
+          path: core/spring/target/pit-reports/
+          if-no-files-found: error

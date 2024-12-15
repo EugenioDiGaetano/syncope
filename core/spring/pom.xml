@@ -35,6 +35,7 @@ under the License.
   
   <properties>
     <rootpom.basedir>${basedir}/../..</rootpom.basedir>
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <dependencies>
@@ -136,29 +137,52 @@ under the License.
       <artifactId>mockito-inline</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.2.0</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+
 
   <build>
     <plugins>
-      <!--plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>1.14.4</version>
+      </plugin>
+
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin-->
-    <plugin>
-      <groupId>org.pitest</groupId>
-      <artifactId>pitest-maven</artifactId>
-      <version>1.14.4</version>
-      <!--configuration>
-        <targetClasses>
-          <param>org.apache.syncope.core.spring.security.DefaultPasswordGenerator</param>
-        </targetClasses>
-        <targetTests>
-          <param>org.apache.syncope.core.spring.security.*</param>
-        </targetTests>
-      </configuration-->
-    </plugin>
+      </plugin>
     </plugins>
-
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -176,5 +200,59 @@ under the License.
       </resource>
     </resources>
   </build>
+
+  <profiles>
+  <profile>
+    <id>pit</id>
+    <activation>
+      <activeByDefault>false</activeByDefault>
+    </activation>
+    <properties>
+      <withHistory>true</withHistory>
+      <pitest.version>1.14.0</pitest.version>
+      <pitest.history.file>${project.build.directory}/pitest.history</pitest.history.file>
+    </properties>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <configuration>
+            <targetClasses>
+              <param>org.apache.syncope.core.spring.security.Encryptor</param>
+            </targetClasses>
+            <targetTests>
+              <!--param>org.apache.syncope.core.spring.security.EncryptorVerifyTest</param-->
+              <param>org.apache.syncope.core.spring.security.EncryptorEncodeTest</param>
+              <param>org.apache.syncope.core.spring.security.EncryptorDecodeTest</param>
+            </targetTests>
+            <avoidCallsTo>
+              <avoidCallsTo>org.slf4j</avoidCallsTo>
+            </avoidCallsTo>
+            <historyInputFile>${pitest.history.file}</historyInputFile>
+            <historyOutputFile>${pitest.history.file}</historyOutputFile>
+            <jvmArgs>
+              <jvmArg>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArg>
+              <jvmArg>--add-opens=java.base/java.util=ALL-UNNAMED</jvmArg>
+              <jvmArg>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</jvmArg>
+              <jvmArg>--add-opens=java.base/java.text=ALL-UNNAMED</jvmArg>
+              <jvmArg>--add-opens=java.desktop/javax.swing=ALL-UNNAMED</jvmArg>
+            </jvmArgs>
+          </configuration>
+          <executions>
+            <execution>
+              <id>PIT Report</id>
+              <phase>test-compile</phase>
+              <goals>
+                <goal>mutationCoverage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+  </profiles>
 
 </project>
