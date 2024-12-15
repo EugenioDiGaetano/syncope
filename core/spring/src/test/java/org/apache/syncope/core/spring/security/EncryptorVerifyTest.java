@@ -1,7 +1,6 @@
 package org.apache.syncope.core.spring.security;
 
 import org.apache.syncope.common.lib.types.CipherAlgorithm;
-import org.apache.syncope.core.spring.ApplicationContextProvider;
 import org.apache.syncope.core.spring.security.utils.Algorithm;
 import org.apache.syncope.core.spring.security.utils.EncodedStatus;
 import org.apache.syncope.core.spring.security.utils.ValueStatus;
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +21,7 @@ public class EncryptorVerifyTest {
     private static Encryptor encryptor;
     private String valueToEncodeTest;
     private String encodedValueTest;
-    private org.apache.syncope.common.lib.types.CipherAlgorithm cipherAlgorithmTest;
+    private CipherAlgorithm cipherAlgorithmTest;
     private ValueStatus valueStatusTest;
     private Algorithm algorithmTest;
     private EncodedStatus encodedStatusTest;
@@ -52,10 +50,7 @@ public class EncryptorVerifyTest {
 
     @BeforeClass
     public static void setUpClass() {
-        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-        Mockito.mockStatic(ApplicationContextProvider.class);
-        Mockito.when(ApplicationContextProvider.getBeanFactory()).thenReturn(beanFactory);
-        beanFactory.registerSingleton("securityProperties", new SecurityProperties());
+        SecurityProperties securityProperties = new SecurityProperties();
         encryptor = Encryptor.getInstance("Isw2024");
     }
 
