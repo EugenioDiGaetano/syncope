@@ -1,5 +1,6 @@
 package org.apache.syncope.core.spring.security;
 
+import org.apache.syncope.common.lib.types.CipherAlgorithm;
 import org.apache.syncope.core.spring.security.utils.Algorithm;
 import org.apache.syncope.core.spring.security.utils.Utils;
 import org.apache.syncope.core.spring.security.utils.ValueStatus;
@@ -37,6 +38,7 @@ public class EncryptorDecodeTest {
         return Arrays.asList(new Object[][]{
                 // ValueStatus              Algorithm                    Exception
                 {ValueStatus.VALID,         Algorithm.AES,               null},
+                {ValueStatus.VALID,         Algorithm.BCRYPT,               null},
                 {ValueStatus.VALID,         Algorithm.NOT_AN_ALGO,       NullPointerException.class},
                 {ValueStatus.NULL,          Algorithm.AES,               null},
                 //{ValueStatus.VALID,         Algorithm.NULL,              null},
@@ -78,14 +80,17 @@ public class EncryptorDecodeTest {
     private void setupAlgo(Algorithm algorithmTest) {
         switch (algorithmTest) {
             case AES:
-                cipherAlgorithmTest = org.apache.syncope.common.lib.types.CipherAlgorithm.AES;
+                cipherAlgorithmTest = CipherAlgorithm.AES;
                 break;
             case NOT_AN_ALGO:
-                cipherAlgorithmTest = Mockito.mock(org.apache.syncope.common.lib.types.CipherAlgorithm.class);
+                cipherAlgorithmTest = Mockito.mock(CipherAlgorithm.class);
                 Mockito.when(cipherAlgorithmTest.getAlgorithm()).thenReturn(null);
                 break;
             case SHA256:
-                cipherAlgorithmTest = org.apache.syncope.common.lib.types.CipherAlgorithm.SHA256;
+                cipherAlgorithmTest = CipherAlgorithm.SHA256;
+                break;
+            case BCRYPT:
+                cipherAlgorithmTest = CipherAlgorithm.BCRYPT;
                 break;
             default:
                 cipherAlgorithmTest = null;
