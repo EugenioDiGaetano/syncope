@@ -3,6 +3,7 @@ package org.apache.syncope.core.spring.security;
 import org.apache.syncope.common.lib.types.CipherAlgorithm;
 import org.apache.syncope.core.spring.security.utils.Algorithm;
 import org.apache.syncope.core.spring.security.utils.EncodedStatus;
+import org.apache.syncope.core.spring.security.utils.Utils;
 import org.apache.syncope.core.spring.security.utils.ValueStatus;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import java.util.Collection;
 public class EncryptorVerifyTest {
 
     private static Encryptor encryptor;
+    private static Utils utils;
     private String valueToEncodeTest;
     private String encodedValueTest;
     private CipherAlgorithm cipherAlgorithmTest;
@@ -44,7 +46,9 @@ public class EncryptorVerifyTest {
                 {ValueStatus.NULL,          Algorithm.AES,              EncodedStatus.EMPTY,            false},
                 {ValueStatus.VALID,         Algorithm.NULL,             EncodedStatus.CORRECT,          false},
                 {ValueStatus.EMPTY,         Algorithm.SHA256,           EncodedStatus.EMPTY,            false},
-                {ValueStatus.VALID,         Algorithm.AES,              EncodedStatus.NOT_CORRECT,      false}
+                {ValueStatus.VALID,         Algorithm.AES,              EncodedStatus.NOT_CORRECT,      false},
+                {ValueStatus.UNICODE,       Algorithm.AES,              EncodedStatus.CORRECT,          true},
+                {ValueStatus.UNICODE,       Algorithm.SHA256,           EncodedStatus.CORRECT,          true}
         });
     }
 
@@ -52,6 +56,7 @@ public class EncryptorVerifyTest {
     public static void setUpClass() {
         SecurityProperties securityProperties = new SecurityProperties();
         encryptor = Encryptor.getInstance("Isw2024");
+        utils = new Utils(42);
     }
 
     @Before
@@ -72,6 +77,8 @@ public class EncryptorVerifyTest {
             case EMPTY:
                 valueToEncodeTest = "";
                 break;
+            case UNICODE:
+                valueToEncodeTest = utils.UnicodeGeneratorString();
         }
     }
 

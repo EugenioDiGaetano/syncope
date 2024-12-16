@@ -2,6 +2,7 @@ package org.apache.syncope.core.spring.security;
 
 import org.apache.syncope.common.lib.types.CipherAlgorithm;
 import org.apache.syncope.core.spring.security.utils.Algorithm;
+import org.apache.syncope.core.spring.security.utils.Utils;
 import org.apache.syncope.core.spring.security.utils.ValueStatus;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,6 +19,7 @@ import java.util.Collection;
 public class EncryptorEncodeTest {
 
     private static Encryptor encryptor;
+    private static Utils utils;
     private String valueToEncodeTest;
     private org.apache.syncope.common.lib.types.CipherAlgorithm cipherAlgorithmTest;
     private ValueStatus valueStatusTest;
@@ -40,13 +42,16 @@ public class EncryptorEncodeTest {
                 {ValueStatus.NULL,          Algorithm.AES,               null},
                 {ValueStatus.VALID,         Algorithm.NULL,              null},
                 {ValueStatus.EMPTY,         Algorithm.SHA256,            null},
-                {ValueStatus.VALID,         Algorithm.AES,               null}
+                {ValueStatus.VALID,         Algorithm.AES,               null},
+                {ValueStatus.UNICODE,       Algorithm.AES,               null},
+                {ValueStatus.UNICODE,       Algorithm.SHA256,            null}
         });
     }
 
     @BeforeClass
     public static void setUpClass() {
         encryptor = Encryptor.getInstance("Isw2024");
+        utils = new Utils(42);
     }
 
     @Before
@@ -66,6 +71,8 @@ public class EncryptorEncodeTest {
             case EMPTY:
                 valueToEncodeTest = "";
                 break;
+            case UNICODE:
+                valueToEncodeTest = utils.UnicodeGeneratorString();
         }
     }
 

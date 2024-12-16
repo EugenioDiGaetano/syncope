@@ -1,5 +1,8 @@
 package org.apache.syncope.core.spring.security;
 
+import org.apache.syncope.core.spring.security.utils.Algorithm;
+import org.apache.syncope.core.spring.security.utils.Utils;
+import org.apache.syncope.core.spring.security.utils.ValueStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,9 +14,6 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.syncope.core.spring.security.utils.Algorithm;
-import org.apache.syncope.core.spring.security.utils.ValueStatus;
-
 @RunWith(Parameterized.class)
 public class EncryptorDecodeTest {
 
@@ -24,6 +24,7 @@ public class EncryptorDecodeTest {
     private Algorithm algorithmTest;
     private ValueStatus encodedStatusTest;
     private Class<? extends Exception> exceptionOutputTest;
+    private static Utils utils;
 
     public EncryptorDecodeTest(ValueStatus encodedStatusTest,Algorithm algorithmTest, Class<? extends Exception> exceptionOutputTest) {
         this.encodedStatusTest = encodedStatusTest;
@@ -40,13 +41,16 @@ public class EncryptorDecodeTest {
                 {ValueStatus.NULL,          Algorithm.AES,               null},
                 //{ValueStatus.VALID,         Algorithm.NULL,              null},
                 {ValueStatus.EMPTY,         Algorithm.SHA256,            null},
-                {ValueStatus.VALID,         Algorithm.AES,               null}
+                {ValueStatus.VALID,         Algorithm.AES,               null},
+                {ValueStatus.UNICODE,       Algorithm.AES,               null},
+                {ValueStatus.UNICODE,       Algorithm.SHA256,            null}
         });
     }
 
     @BeforeClass
     public static void setUpClass() {
         encryptor = Encryptor.getInstance("Isw2024");
+        utils = new Utils(42);
     }
 
     @Before
@@ -66,6 +70,8 @@ public class EncryptorDecodeTest {
             case EMPTY:
                 valueDecodedTest = "";
                 break;
+            case UNICODE:
+                valueDecodedTest = utils.UnicodeGeneratorString();
         }
     }
 
