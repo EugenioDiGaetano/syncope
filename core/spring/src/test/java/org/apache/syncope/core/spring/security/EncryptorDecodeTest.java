@@ -38,7 +38,7 @@ public class EncryptorDecodeTest {
         return Arrays.asList(new Object[][]{
                 // ValueStatus              Algorithm                    Exception
                 {ValueStatus.VALID,         Algorithm.AES,               null},
-                {ValueStatus.VALID,         Algorithm.BCRYPT,               null},
+                {ValueStatus.VALID,         Algorithm.BCRYPT,            null},
                 {ValueStatus.VALID,         Algorithm.NOT_AN_ALGO,       NullPointerException.class},
                 {ValueStatus.NULL,          Algorithm.AES,               null},
                 //{ValueStatus.VALID,         Algorithm.NULL,              null},
