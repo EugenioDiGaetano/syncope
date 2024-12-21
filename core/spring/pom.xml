@@ -206,7 +206,7 @@ under the License.
                 <param>org.apache.syncope.core.spring.security.EncryptorEncodeTest</param>
                 <param>org.apache.syncope.core.spring.security.EncryptorDecodeTest</param>
                 <param>org.apache.syncope.core.spring.policy.DefaultPasswordRuleSetConfTest</param>
-                <param>org.apache.syncope.core.spring.policy.DefaultPasswordRuleAEnforceTest</param>
+                <param>org.apache.syncope.core.spring.policy.DefaultPasswordRuleEnforceTest</param>
               </targetTests>
               <historyInputFile>${pitest.history.file}</historyInputFile>
               <historyOutputFile>${pitest.history.file}</historyOutputFile>

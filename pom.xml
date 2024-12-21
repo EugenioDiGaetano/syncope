@@ -1742,6 +1742,7 @@ under the License.
           <javaVersion>${targetJdk}</javaVersion>
           <ignorePackages>
             <ignorePackage>org.apache.syncope.core.persistence.jpa.entity</ignorePackage>
+            <ignorePackage>org.apache.syncope.core.spring.policy</ignorePackage>
           </ignorePackages>
           <exclusions>
             <exclusion>java/util/Optional.get:()Ljava/lang/Object;</exclusion>

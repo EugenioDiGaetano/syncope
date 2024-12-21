@@ -2,14 +2,19 @@ package org.apache.syncope.core.spring.policy;
 
 import org.apache.syncope.common.lib.policy.DefaultPasswordRuleConf;
 import org.apache.syncope.core.spring.policy.utils.IllegalCharType;
+import org.apache.syncope.core.spring.policy.utils.TestRuleConf;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.passay.RuleResultDetail;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 @RunWith(Parameterized.class)
 public class DefaultPasswordRuleSetConfTest {
@@ -27,6 +32,9 @@ public class DefaultPasswordRuleSetConfTest {
     private Class<? extends Exception> exceptionOutputTest;
 
     private DefaultPasswordRuleConf conf;
+    private TestRuleConf invalidConf;
+    private Map<String, String> messages;
+
 
     public DefaultPasswordRuleSetConfTest(
             int alphabetical, int digit, int maxLength, int minLength,
@@ -56,14 +64,16 @@ public class DefaultPasswordRuleSetConfTest {
                 {2,                 2,          16,         1,              1,              2,          2,              false,              IllegalCharType.VALID,       java.lang.IllegalStateException.class},
                 //{0,                 0,          0,          1,              0,              0,          0,              false,              IllegalCharType.VALID,       java.lang.IllegalStateException.class},
                 {0,                 0,          1,          1,              0,              1,          0,              true,               IllegalCharType.VALID,       null},
-                {0,                 2,          1,          0,              16,             1,          1,              true,               IllegalCharType.VALID,       null}
+                {0,                 2,          1,          0,              16,             1,          1,              true,               IllegalCharType.VALID,       null},
+                // Nuovo caso di test che gestisce il caso in cui la conf non è DefaultPasswordRuleConf
+                {Integer.MIN_VALUE, 0,          0,          0,              0,              0,          0,              false,              IllegalCharType.VALID,       java.lang.IllegalArgumentException.class}
         });
     }
 
     @Before
     public void setUp() {
         passwordRule = new DefaultPasswordRule();
-
+        invalidConf = new TestRuleConf();
         conf = org.mockito.Mockito.spy(new DefaultPasswordRuleConf());
         conf.setAlphabetical(alphabetical);
         conf.setDigit(digit);
@@ -75,6 +85,22 @@ public class DefaultPasswordRuleSetConfTest {
         conf.setUsernameAllowed(usernameAllowed);
         conf.getIllegalChars().clear();
         setUpIllegalChar();
+        writePassayProperties();
+    }
+
+    public void writePassayProperties() {
+        messages = new HashMap<>();
+        String filePath = System.getProperty("user.dir")+"/src/main/resources/passay.properties";
+        messages.put("TOO_SHORT", "Password troppo corta.");
+        //messages.put("TOO_LONG", "Password troppo lunga.");
+        File passayFile = new File(filePath);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(passayFile, false))) {
+            for (Map.Entry<String, String> entry : messages.entrySet()) {
+                writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Errore durante la scrittura del file 'passay.properties': " + e.getMessage());
+        }
     }
 
     private void setUpIllegalChar() {
@@ -115,6 +141,11 @@ public class DefaultPasswordRuleSetConfTest {
                 Assert.assertEquals(conf.getUppercase(), retrievedConf.getUppercase());
                 Assert.assertEquals(conf.isUsernameAllowed(), retrievedConf.isUsernameAllowed());
                 Assert.assertEquals(conf.getIllegalChars(), retrievedConf.getIllegalChars());
+                for (Map.Entry<String, String> entry : messages.entrySet()) {
+                    RuleResultDetail resDetail = new RuleResultDetail(entry.getKey(), new LinkedHashMap<>());
+                    String resMessage = passwordRule.passwordValidator.getMessageResolver().resolve(resDetail);
+                    Assert.assertEquals("Errore nella configurazione dei messaggi", entry.getValue(),resMessage);
+                }
             } catch (Exception e) {
                 Assert.fail("Errore durante la verifica dei campi di configurazione: " + e.getMessage());
             }
@@ -123,7 +154,10 @@ public class DefaultPasswordRuleSetConfTest {
             // Quando ci si aspetta un'eccezione, proviamo a lanciare la funzione e verifichiamo l'eccezione
             boolean exceptionThrown = false;
             try {
-                passwordRule.setConf(conf);
+                if (alphabetical==Integer.MIN_VALUE)
+                    passwordRule.setConf(invalidConf);
+                else
+                    passwordRule.setConf(conf);
             } catch (Exception e) {
                 // Verifica che l'eccezione sollevata sia quella che ci aspettiamo
                 if (e.getClass().equals(exceptionOutputTest)) {
